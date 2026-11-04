@@ -10,3 +10,4 @@
 - ゲーム本体の元ファイル: `src/game.html`(claude.ai版と共通)
 - 追加データの下書き: `src/parts/`
 - アプリ版の作り直し: `python3 tools/build_app.py src/game.html .`
+- 魔生物のイラスト: `art/original/<魔生物id>.jpg` に置いて `python3 tools/embed_art.py` を実行し、そのあとアプリ版を作り直す

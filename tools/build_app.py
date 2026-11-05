@@ -38,6 +38,7 @@ self.addEventListener('activate',e=>{{e.waitUntil(caches.keys().then(ks=>Promise
 self.addEventListener('fetch',e=>{{
   const r=e.request;if(r.method!=='GET')return;
   const u=new URL(r.url);
+  if(u.pathname.includes('/kingyo/'))return;
   if(r.mode==='navigate'||(u.origin===location.origin&&u.pathname.endsWith('.html'))){{
     e.respondWith(fetch(r).then(res=>{{const cp=res.clone();caches.open(V).then(c=>c.put('./index.html',cp));return res;}}).catch(()=>caches.match('./index.html')));return;
   }}

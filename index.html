@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Antique&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>html,body{margin:0;padding:0}body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
-<script>window.JG_APP=true;window.JG_VER="ce47097238";</script>
+<script>window.JG_APP=true;window.JG_VER="361a790819";</script>
 </head><body>
 <style>
 /* Layout: 夜のローカル線。上に路線図、その下に駅名標つきの情景、町の施設と探索先をカードで並べる。戦闘と会話は白い二重枠のRPGウィンドウ */
@@ -2091,8 +2091,11 @@ const GACHA={c1:100,c10:1000,rate:[[8,.03],[7,.15],[6,.82]],pity:100};
 const gachaPool=r=>SPL.filter(s=>s.gacha&&s.rank===r&&r<=8);
 const dexList=()=>SPL.filter(s=>!s.gacha);
 const isGacha=m=>!!(m&&SP[m.sp]&&SP[m.sp].gacha);
-const tmaxOf=m=>isGacha(m)?25:TMAX;
-const capFor=(spId,plus)=>SP[spId].gacha?Math.min(GACHA_LV[SP[spId].rank]||120,80+plus*5):Math.min(99,30+plus*4);
+const tmaxOf=m=>25;
+/* 成長のしかた: ガチャ産は+値ごとの伸びが小さい(手軽に強いが伸びしろは配合産より小さい)。配合産は世代を重ねるほど伸びる */
+const plusRate=spId=>SP[spId].gacha?.015:.035;
+const genBonus=m=>1+Math.min(m.gen||0,10)*.015;
+const capFor=(spId,plus)=>SP[spId].gacha?Math.min(250,80+plus*3):Math.min(250,30+plus*4);
 function dayKey(off=0){const d=new Date(Date.now()+off*864e5);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function weekPickup(){const w=Math.floor((Date.now()/864e5+3)/7),ps=gachaPool(8);const end=new Date((w*7-3+7)*864e5);return {sp:ps[w%ps.length].id,end};}
 function addStars(n,why){state.stars=(state.stars||0)+n;if(why)ui.starNote=`★${n} ${why}`;}
@@ -2154,12 +2157,12 @@ function renderGacha(){
   const L=state.login||{streak:0};
   const ms=MISSIONS.map(x=>{const v=missionVal(x.k),got=state.daily.got[x.k],ok=v>=x.goal;return `<div class="ms ${ok&&!got?'ok':''}"><span class="small">${x.n} <span class="num muted">${Math.min(v,x.goal)}/${x.goal}</span></span><b class="num hl">★${x.rw}</b>${got?'<span class="badge good">受取済み</span>':`<button class="btn sm ${ok?'primary':''}" data-act="mission" data-k="${x.k}" ${ok?'':'disabled'}>受け取る</button>`}</div>`;}).join('');
   return `<section class="stack">
-    <div class="panel gshrine stack"><span class="eyebrow">ガチャ限定 ・ ステータス上限なし</span><div class="row between"><h2>星降りの祠</h2><b class="stars num">★ ${st.toLocaleString()}</b></div>
+    <div class="panel gshrine stack"><span class="eyebrow">ガチャ限定 ・ すぐに戦力になる</span><div class="row between"><h2>星降りの祠</h2><b class="stars num">★ ${st.toLocaleString()}</b></div>
       <div class="gpick"><div class="gpick-sp">${seal(pu.sp,'xl',true)}</div><div class="stack tight"><span class="tag warn">今週のピックアップ</span><h3>${ps.name}</h3><span class="small">SSS ${RANK_TITLE[8]} ・ ${FAM[ps.fam].n} ・ ${pu.end.getMonth()+1}月${pu.end.getDate()}日まで</span><p class="small muted">${ps.desc}</p><p class="small hl">SSSが出たときの半分は、ピックアップの${ps.name}。</p></div></div>
       <div class="row center"><button class="btn primary big" data-act="gpull" data-n="1" ${st>=GACHA.c1?'':'disabled'}>1回 ★${GACHA.c1}</button><button class="btn danger-fill big" data-act="gpull" data-n="10" ${st>=GACHA.c10?'':'disabled'}>10連 ★${GACHA.c10}</button></div>
       <p class="small center-t">10連は<b class="hl">SS以上1体確定</b> ・ 天井まであと<b class="hl num">${GACHA.pity-(state.gpity||0)}回</b>(${GACHA.pity}回でピックアップSSS確定)</p>
       <details class="rules"><summary>排出される魔生物と確率</summary><div class="stack" style="margin-top:8px">${rows}
-        <p class="small muted">ガチャ産の魔生物はLv10で生まれる。ランクごとにレベル上限が高く(S 120・SS 150・SSS 200・創世 250)、能力値の上限999もなくなる。才能は25(SSS)まで伸ばせる。+値1ごとにレベル上限が5上がる(+0で80)。</p>
+        <p class="small muted">ガチャ産の魔生物はLv10で生まれ、はじめからレベル上限が80と高く、能力も高い。そのかわり+値ごとの伸びは配合産の半分以下で、世代ボーナスもつきにくい。+値1ごとにレベル上限が3上がる(最大250)。配合で血を重ねた魔生物は、育てきるとガチャ産に追いつき、追いこせる。</p>
         <p class="small muted">創世ランクはガチャからは出ない。四神(SSS)をLv80以上にして「覚醒の宝珠」を使うと「真」の姿に覚醒する。四神どうしの特殊配合からは「コウリュウ」が生まれる。</p></div></details></div>
     <div class="panel stack"><div class="row between"><h3>デイリーミッション</h3><span class="small muted">ログイン ${L.streak||0}日連続(毎日★100、7日ごとに★500)</span></div><div class="mslist">${ms}</div></div>
     <div class="panel stack"><h4>流星石の手に入れかた</h4><ul class="small" style="margin:0;padding-left:1.2em">
@@ -2296,8 +2299,8 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 function calc(m){
   const sp=SP[m.sp],nat=NAT[m.nature].m,r={};
   STATS.forEach((k,i)=>{
-    const v=sp.base[i]*(m.lv+4)/5*(1+m.talent[k]/100)*(1+m.plus*.03)*(nat[k]||1)+(m.bonus[k]||0);
-    r[k]=clamp(Math.floor(v),1,sp.gacha?99999:999);
+    const v=sp.base[i]*(m.lv+4)/5*(1+m.talent[k]/100)*(1+m.plus*plusRate(m.sp))*genBonus(m)*(nat[k]||1)+(m.bonus[k]||0);
+    r[k]=clamp(Math.floor(v),1,99999);
   });
   return r;
 }
@@ -2839,7 +2842,9 @@ function renderBreed(){
       <li><b>系統配合</b>: それ以外は系統の組み合わせで子の系統が決まり、親のランクの平均より少し上のランクの魔生物が生まれる(系統配合はBランクまで)。</li>
       <li><b>純血配合</b>: 同じ系統どうしの配合では、子の才能がすべて+1される。</li>
       <li><b>？？？？系</b>: どの系統と配合しても、子は？？？？系になる。最初の1体は特殊配合で生み出そう。SSランクは？？？？系の頂点。</li>
-      <li><b>才能の上限</b>: 配合で伸びる才能は15(S)まで。才能のかけらや天賦の宝珠を使うと20(SS)まで伸ばせて、15を超えた才能も子に受け継がれる。</li>
+      <li><b>才能の上限</b>: 配合で伸びる才能は15(S)まで。才能のかけらや天賦の宝珠を使うと25(SSS)まで伸ばせて、15を超えた才能も子に受け継がれる。</li>
+      <li><b>上限なし</b>: 能力値に上限はない。レベル上限は+値1ごとに4上がり、最大Lv250(+0でLv30)。+値1ごとに能力が3.5%伸びる。</li>
+      <li><b>世代ボーナス</b>: 配合で世代を重ねるほど、すべての能力が伸びる(1世代ごとに1.5%、第10世代で最大15%)。</li>
       <li><b>メタル系</b>: 親にすると子の+値がさらに2上がる。メタルボディは受け継がれない。</li>
       <li><b>4体配合</b>: 親だけでなく、祖父母(親の親)が条件になる配合もある。</li>
       <li><b>+値</b>: 両親の+値の合計(+3と+3なら+6。+0どうしでも最低+1)。+値が上がるほど能力とレベル上限が伸びる。</li>

@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Antique&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>html,body{margin:0;padding:0}body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
-<script>window.JG_APP=true;window.JG_VER="e1053b11ce";</script>
+<script>window.JG_APP=true;window.JG_VER="5fd4367a03";</script>
 </head><body>
 <style>
 /* Layout: 夜のローカル線。上に路線図、その下に駅名標つきの情景、町の施設と探索先をカードで並べる。戦闘と会話は白い二重枠のRPGウィンドウ */
@@ -2093,7 +2093,7 @@ const dexList=()=>SPL.filter(s=>!s.gacha);
 const isGacha=m=>!!(m&&SP[m.sp]&&SP[m.sp].gacha);
 const tmaxOf=m=>25;
 /* 成長のしかた: ガチャ産は+値ごとの伸びが小さい(手軽に強いが伸びしろは配合産より小さい)。配合産は世代を重ねるほど伸びる */
-const plusRate=spId=>SP[spId].gacha?(SP[spId].rank>=9?.03:.015):.035; /* 創世だけは+値をよく伸ばせる */
+const plusRate=spId=>SP[spId].gacha?(SP[spId].rank>=9?.03:SP[spId].rank===8?.026:.015):.035; /* 創世は最強、四神(SSS)は育てきると配合産SSと互角 */
 const genBonus=m=>1+Math.min(m.gen||0,10)*.015;
 const capFor=(spId,plus)=>SP[spId].gacha?Math.min(250,80+plus*3):Math.min(250,30+plus*4);
 function dayKey(off=0){const d=new Date(Date.now()+off*864e5);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -2162,7 +2162,7 @@ function renderGacha(){
       <div class="row center"><button class="btn primary big" data-act="gpull" data-n="1" ${st>=GACHA.c1?'':'disabled'}>1回 ★${GACHA.c1}</button><button class="btn danger-fill big" data-act="gpull" data-n="10" ${st>=GACHA.c10?'':'disabled'}>10連 ★${GACHA.c10}</button></div>
       <p class="small center-t">10連は<b class="hl">SS以上1体確定</b> ・ 天井まであと<b class="hl num">${GACHA.pity-(state.gpity||0)}回</b>(${GACHA.pity}回でピックアップSSS確定)</p>
       <details class="rules"><summary>排出される魔生物と確率</summary><div class="stack" style="margin-top:8px">${rows}
-        <p class="small muted">ガチャ産の魔生物はLv10で生まれ、はじめからレベル上限が80と高く、能力も高い。そのかわり+値ごとの伸びは配合産の半分以下で、世代ボーナスもつきにくい。ただし覚醒や配合でたどりつく創世ランクは、+値を重ねるほど大きく伸び、最強をめざせる。+値1ごとにレベル上限が3上がる(最大250)。配合で血を重ねた魔生物は、育てきるとガチャ産に追いつき、追いこせる。</p>
+        <p class="small muted">ガチャ産の魔生物はLv10で生まれ、はじめからレベル上限が80と高く、能力も高い。そのかわり+値ごとの伸びは配合産の半分以下で、世代ボーナスもつきにくい。四神(SSS)は育てきると、配合で育てきったSSと互角になる。覚醒や配合でたどりつく創世ランクは、+値を重ねるほど大きく伸び、最強をめざせる。+値1ごとにレベル上限が3上がる(最大250)。配合で血を重ねた魔生物は、育てきるとガチャ産に追いつき、追いこせる。</p>
         <p class="small muted">創世ランクはガチャからは出ない。四神(SSS)をLv80以上にして「覚醒の宝珠」を使うと「真」の姿に覚醒する。四神どうしの特殊配合からは「コウリュウ」が生まれる。</p></div></details></div>
     <div class="panel stack"><div class="row between"><h3>デイリーミッション</h3><span class="small muted">ログイン ${L.streak||0}日連続(毎日★100、7日ごとに★500)</span></div><div class="mslist">${ms}</div></div>
     <div class="panel stack"><h4>流星石の手に入れかた</h4><ul class="small" style="margin:0;padding-left:1.2em">

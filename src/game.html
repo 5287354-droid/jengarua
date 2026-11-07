@@ -2635,6 +2635,8 @@ function predict(a,b){
     }
   }
   const fa=SP[a.sp].fam,fb=SP[b.sp].fam;
+  /* 同種配合: 同じ種族どうしなら、ランクに関係なく同じ種族が生まれる */
+  if(a.sp===b.sp)return {sp:a.sp,special:false,lineage:true,same:true,fam:fa,near};
   /* 血統配合: Bランク以上が1体目(左)で、2体目が同じ系統なら、1体目と同じ種族が生まれる */
   if(fa===fb&&SP[a.sp].rank>=LINEAGE_RANK)return {sp:a.sp,special:false,lineage:true,fam:fa,near};
   const fam=MIX[fa+'|'+fb];
@@ -2738,7 +2740,7 @@ function renderBreed(){
   let pr=null;
   if(a&&b){
     pr=predict(a,b);const sp=SP[pr.sp],known=!!state.seen[pr.sp];
-    res=`<div class="slot result-slot ready">${seal(pr.sp,'lg',known?true:'sil')}<span class="nm">${known?sp.name:'？？？'}</span><span class="small muted num">${FAM[sp.fam].n} ・ ${RANKS[sp.rank]}ランク ・ +${kidPlus(a,b,pr,ui.cats)}</span><span class="row center">${pr.special?'<i class="mk sp">特殊配合</i>':''}${pr.lineage?'<i class="mk ln">血統配合</i>':''}${!state.owned[pr.sp]?'<i class="mk nw">NEW</i>':''}</span></div>`;
+    res=`<div class="slot result-slot ready">${seal(pr.sp,'lg',known?true:'sil')}<span class="nm">${known?sp.name:'？？？'}</span><span class="small muted num">${FAM[sp.fam].n} ・ ${RANKS[sp.rank]}ランク ・ +${kidPlus(a,b,pr,ui.cats)}</span><span class="row center">${pr.special?'<i class="mk sp">特殊配合</i>':''}${pr.lineage?`<i class="mk ln">${pr.same?'同種配合':'血統配合'}</i>`:''}${!state.owned[pr.sp]?'<i class="mk nw">NEW</i>':''}</span></div>`;
   }
   const bench=`<div class="panel bench"><div class="benchrow">${slot(a,'A')}<span class="op">×</span>${slot(b,'B')}<span class="op eq">＝</span>${res}</div>
     <div class="row center">${a&&b?'<button class="btn primary big" data-act="breed">配合する</button>':`<span class="small muted">${a||b?'もう1体をえらぶ':'下の一覧から2体えらぶか、「おすすめ配合」から組み合わせを選ぶ'}</span>`}${a||b?'<button class="btn sm" data-act="bswap">⇄ 左右を入れかえ</button><button class="btn sm ghost" data-act="bclear">えらび直す</button>':''}</div>
@@ -2792,7 +2794,7 @@ function renderBreed(){
       body=`<div class="setgrid"><div class="stack">
         <div class="panel stack"><h4>生まれる子の予想</h4>
           <div class="kv"><span>魔生物</span><b>${known?sp.name:'？？？'}(${FAM[sp.fam].n} ${RANKS[sp.rank]})</b></div>
-          <div class="kv"><span>配合の種類</span><b>${pr.special?'特殊配合':pr.lineage?`血統配合(1体目の種族を受け継ぐ)`:`系統配合(${FAM[SP[a.sp].fam].n}×${FAM[SP[b.sp].fam].n})`}${pure?' ・ 純血':''}</b></div>
+          <div class="kv"><span>配合の種類</span><b>${pr.special?'特殊配合':pr.same?'同種配合(同じ種族が生まれる)':pr.lineage?`血統配合(1体目の種族を受け継ぐ)`:`系統配合(${FAM[SP[a.sp].fam].n}×${FAM[SP[b.sp].fam].n})`}${pure?' ・ 純血':''}</b></div>
           <div class="kv"><span>+値</span><b class="hl">+${plus}<small class="muted">(上限Lv${capFor(pr.sp,plus)})${metal?' メタル+2':''}${cat.includes('kettou')&&pr.lineage?' 血統書+2':''}</small></b></div>
           <div class="kv"><span>世代</span><b>第${gen}世代</b></div>
           <div class="kv"><span>色違い</span><b class="hl">${pct(shP)}</b></div>
@@ -2824,6 +2826,7 @@ function renderBreed(){
     body=`<details class="panel rules" open><summary>配合のしくみ</summary><ul>
       <li>配合できるのはLv10以上の魔生物どうし。親2体はいなくなり、Lv1の子が生まれる。子は親の世代+1になり、家系図は曽祖父母まで記録される。</li>
       <li><b>特殊配合</b>: 決まった組み合わせで、特定の魔生物が生まれる。Sランク以上は特殊配合でしか生まれない。</li>
+      <li><b>同種配合</b>: 同じ種族どうしの配合では、ランクに関係なく必ず同じ種族が生まれる(特殊配合が成り立つときはそちらが優先)。低いランクの魔生物の+値を上げたいときに。血統書も使える。</li>
       <li><b>血統配合</b>: Bランク以上の魔生物を<b>1体目(左)</b>に置き、<b>同じ系統</b>の魔生物と配合すると、1体目と同じ種族が生まれる。特殊配合が成り立つときはそちらが優先。強い魔生物の+値を落とさずに重ねていける。配合台の「⇄ 左右を入れかえ」で血統を選べる。</li>
       <li><b>系統配合</b>: それ以外は系統の組み合わせで子の系統が決まり、親のランクの平均より少し上のランクの魔生物が生まれる(系統配合はBランクまで)。</li>
       <li><b>純血配合</b>: 同じ系統どうしの配合では、子の才能がすべて+1される。</li>
@@ -2851,7 +2854,7 @@ function doBreed(){
   const cat=(ui.cats||[]).filter(k=>(state.items[k]||0)>0).slice(0,CATMAX);
   const pr=predict(a,b);let out=pr.sp;const notes=[];
   if(pr.special)notes.push('特殊配合');
-  else if(pr.lineage)notes.push('血統配合');
+  else if(pr.lineage)notes.push(pr.same?'同種配合':'血統配合');
   else{
     const grands=[...(a.parents||[]),...(b.parents||[])].map(p=>p.sp);
     if(grands.length&&Math.random()<(cat.includes('omamori')?.4:.08)){out=pick(grands);notes.push('隔世遺伝');}

@@ -20,7 +20,19 @@ html=f'''<!doctype html>
 </head><body>
 {body}
 <script>
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{{}}));
+/* 新しい版の自動チェック: 開いたときと、アプリに戻ってきたときに確かめる */
+(function(){{
+  let reg=null,asked=false;
+  if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{{updateViaCache:'none'}}).then(r=>{{reg=r;}}).catch(()=>{{}}));
+  async function hardReload(){{try{{if(reg)await reg.update();const ks=await caches.keys();await Promise.all(ks.filter(k=>k.startsWith('jengarua-')).map(k=>caches.delete(k)));}}catch(e){{}}location.reload();}}
+  function bar(nv){{if(asked||document.getElementById('jg-upd'))return;asked=true;const d=document.createElement('div');d.id='jg-upd';
+    d.style.cssText='position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:99;display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:10px;background:#0a0f1c;border:2px solid #f2b13c;color:#eaeef7;font:14px sans-serif;box-shadow:0 8px 24px #000a;width:max-content;max-width:calc(100% - 32px)';
+    d.innerHTML='<span>新しい版があります</span><button style="padding:6px 14px;border-radius:8px;border:0;background:#f2b13c;color:#1b1404;font:inherit;cursor:pointer">更新する</button>';
+    d.querySelector('button').onclick=()=>{{try{{if(typeof save==='function')save();}}catch(e){{}}hardReload();}};document.body.appendChild(d);}}
+  async function check(){{try{{const t=await (await fetch('./index.html?v='+Date.now(),{{cache:'no-store'}})).text();const m=t.match(/JG_VER="([0-9a-f]+)"/);if(m&&m[1]!==window.JG_VER)bar(m[1]);}}catch(e){{}}}}
+  window.addEventListener('load',()=>setTimeout(check,1500));
+  document.addEventListener('visibilitychange',()=>{{if(document.visibilityState==='visible'){{check();if(reg)reg.update().catch(()=>{{}});}}}});
+}})();
 try{{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}}catch(e){{}}
 </script>
 </body></html>
@@ -40,7 +52,7 @@ self.addEventListener('fetch',e=>{{
   const u=new URL(r.url);
   if(u.pathname.includes('/kingyo/'))return;
   if(r.mode==='navigate'||(u.origin===location.origin&&u.pathname.endsWith('.html'))){{
-    e.respondWith(fetch(r).then(res=>{{const cp=res.clone();caches.open(V).then(c=>c.put('./index.html',cp));return res;}}).catch(()=>caches.match('./index.html')));return;
+    e.respondWith(fetch(r.url,{{cache:'no-store',credentials:'same-origin'}}).then(res=>{{if(res.ok){{const cp=res.clone();caches.open(V).then(c=>c.put('./index.html',cp));}}return res;}}).catch(()=>caches.match('./index.html')));return;
   }}
   if(u.origin===location.origin||/fonts\\.(googleapis|gstatic)\\.com$/.test(u.hostname)){{
     e.respondWith(caches.match(r).then(hit=>hit||fetch(r).then(res=>{{if(res.ok||res.type==='opaque'){{const cp=res.clone();caches.open(V).then(c=>c.put(r,cp));}}return res;}})));

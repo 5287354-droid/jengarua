@@ -8,7 +8,7 @@ self.addEventListener('fetch',e=>{
   const u=new URL(r.url);
   if(u.pathname.includes('/kingyo/'))return;
   if(r.mode==='navigate'||(u.origin===location.origin&&u.pathname.endsWith('.html'))){
-    e.respondWith(fetch(r).then(res=>{const cp=res.clone();caches.open(V).then(c=>c.put('./index.html',cp));return res;}).catch(()=>caches.match('./index.html')));return;
+    e.respondWith(fetch(r.url,{cache:'no-store',credentials:'same-origin'}).then(res=>{if(res.ok){const cp=res.clone();caches.open(V).then(c=>c.put('./index.html',cp));}return res;}).catch(()=>caches.match('./index.html')));return;
   }
   if(u.origin===location.origin||/fonts\.(googleapis|gstatic)\.com$/.test(u.hostname)){
     e.respondWith(caches.match(r).then(hit=>hit||fetch(r).then(res=>{if(res.ok||res.type==='opaque'){const cp=res.clone();caches.open(V).then(c=>c.put(r,cp));}return res;})));

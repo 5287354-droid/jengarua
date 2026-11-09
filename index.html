@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Antique&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>html,body{margin:0;padding:0}body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
-<script>window.JG_APP=true;window.JG_VER="e33e99eccf";</script>
+<script>window.JG_APP=true;window.JG_VER="92ea8221e4";</script>
 </head><body>
 <style>
 /* Layout: 夜のローカル線。上に路線図、その下に駅名標つきの情景、町の施設と探索先をカードで並べる。戦闘と会話は白い二重枠のRPGウィンドウ */
@@ -2189,6 +2189,179 @@ Object.assign(SONGS,{
 TOWN_BGM.hinoshima='hinoshima';BOSS_BGM.hinoshima='hisanshou';BOSS_BGM.hinoshima_ura='kagutsuchi';
 Object.assign(SONG_NAME,{hinoshima:'火ノ島',hisanshou:'火口のぬし',kagutsuchi:'最初の火'});
 
+/* ========== 拡張: JG08 南の珊瑚島・JG09 黄泉ヶ原 ========== */
+Object.assign(SK,{
+  sangoshou:{n:'さんごしょう',mp:26,k:'mag',t:'all',b:70,e:'水',d:'珊瑚の海が盛りあがり、敵全体を打ちつける'},
+  oonami:{n:'おおなみ',mp:28,k:'phys',t:'all',p:270,d:'大きな胸びれで波を起こし、敵全体をのみこむ'},
+  gajumaru:{n:'ガジュマルのねっこ',mp:16,k:'stat',t:'all',st:[['para',.45]],d:'気根をのばして、敵全体をからめとる'},
+  kijimunabi:{n:'キジムナーび',mp:30,k:'mag',t:'all',b:78,e:'炎',st:[['confuse',.2]],d:'夜の海辺にともる、ふしぎな火の玉の群れ'},
+  ougonnosanagi:{n:'おうごんのさなぎ',mp:18,k:'heal',t:'allies',b:60,cure:true,d:'金色のさなぎの光で、味方全体を回復する'},
+  niraikanai:{n:'ニライカナイ',mp:46,k:'mag',t:'all',b:130,e:'水',d:'海のかなたの楽園から、大いなる潮が押しよせる'},
+  higannohana:{n:'ひがんのはな',mp:18,k:'stat',t:'all',st:[['sleep',.5],['confuse',.3]],d:'赤い花が一面に咲き、敵全体を夢の中へさそう'},
+  tamashiibi:{n:'たましいのひかり',mp:30,k:'heal',t:'allies',b:90,cure:true,d:'あたたかな光が、味方全体の傷と心をいやす'},
+  yomiokuri:{n:'よみおくり',mp:40,k:'mag',t:'all',b:120,e:'光',d:'まよう者を光で送りとどける'},
+  yomotsuhirasaka:{n:'よもつひらさか',mp:44,k:'phys',t:'all',p:310,debuff:{def:-1},dch:.4,d:'あの世とこの世の境の坂を、ころがり落ちるように打ちすえる'},
+  tokoyonohi:{n:'とこよのひ',mp:56,k:'mag',t:'all',b:170,e:'',d:'終わることのない国の灯が、すべてを照らしつくす'},
+});
+Object.assign(TR,{
+  tokoyonomori:{n:'とこよのまもり',d:'倒れても一度だけHP1で立ちあがり、受けるダメージを15%減らす(トコヨだけがもつ)',noInherit:true},
+});
+
+/* JG08 南の珊瑚島 */
+S('kumanomi','クマノミ','aqua','C','隠','クマノミ','毒のあるイソギンチャクの中を家にする、オレンジと白のしまもようの魚。イソギンチャクの毒も、この魚にだけはきかない。',[30,14,16,14,16,12],[[1,'mizudeppou'],[8,'konohagakure'],[16,'uzushio'],[26,'shiofuki']],'subashikoi');
+S('yashigani','ヤシガニ','aqua','B','椰','ヤシガニ','ヤシの実を割るほどの力をもつ、陸にすむ大きなヤドカリのなかま。夜になると木に登り、実を落として食べる。',[44,12,26,24,9,8],[[1,'hasami'],[1,'kourakatame'],[20,'noshikakari'],[30,'kongou']],'koura');
+S('hirugi','ヒルギ','plant','B','蛸','オヒルギ','海水の中に根をおろすマングローブの木。タコの足のような根で、潮の満ち引きにもびくともしない。',[50,22,14,20,7,16],[[1,'yakusou'],[1,'makitsuki'],[20,'gajumaru'],[30,'wakagaeri']],'saisei');
+S('ookoumori','オオコウモリ','beast','B','蝠','ヤエヤマオオコウモリ','翼を広げると大人の腕ほどもある、果物を食べるコウモリ。夜の森の上を、静かに島から島へわたっていく。',[40,20,20,13,22,14],[[1,'kyuuketsu'],[1,'chouonpa'],[20,'mion'],[30,'tsumuji']],'kyuuketsu');
+S('oogomadara','オオゴマダラ','bug','A','蛹','オオゴマダラ','白と黒のまだらの、ゆったり飛ぶ大きなチョウ。さなぎはまるで純金でできたように、黄金色にかがやく。',[50,34,14,16,20,26],[[1,'rinpun'],[1,'hotarubi'],[25,'ougonnosanagi'],[40,'yumenokuni']],'kourin');
+S('erabu','エラブ','dragon','A','縞','エラブウミヘビ','青と黒のしまもようの、海にすむヘビ。強い毒をもつが、とてもおとなしい。夜は岸の岩のすき間で眠る。',[60,26,28,20,18,18],[[1,'makitsuki'],[1,'shinkeidoku'],[25,'mizuchinouzu'],[40,'renzokusashi']],'moudoku');
+S('kijimuna','キジムナー','spirit','S','樹','ガジュマル','古いガジュマルの木にすむという、赤い髪の小さな精霊。気に入った人には魚とりを手伝い、いたずらもする。',[72,40,26,22,30,34],[[1,'onibi'],[1,'gajumaru'],[30,'kijimunabi'],[45,'tamashiibi']],'izumi');
+S('oniitomaki','オニイトマキ','aqua','S','翼','オニイトマキエイ','つばさのような胸びれを広げると、小舟より大きいエイ。月夜には海面から高く跳びあがり、珊瑚の海に影を落とす。',[90,30,34,26,22,22],[[1,'shiofuki'],[1,'takatobikomi'],[30,'oonami'],[45,'sangoshou']],'fukutsu');
+S('nirai','ニライ','myst','SS','楽','ジンベエザメ','海のかなたにあるという楽園「ニライカナイ」から来た、星もようの大きな魚。この魚が通ったあとの海には、豊かな幸がもたらされる。',[130,50,36,34,20,40],[[1,'uzushio'],[1,'zuiun'],[40,'sangoshou'],[60,'niraikanai']],'haou',true);
+
+/* JG09 黄泉ヶ原 */
+S('yomibotaru','ヨミボタル','bug','A','灯','ゲンジボタル','黄泉ヶ原の川辺にだけ光る、青白いホタル。ひとつひとつの光は、この原っぱで眠る魔生物の思い出だという。',[58,40,16,18,26,30],[[1,'hotarubi'],[1,'yumemi'],[30,'senkou'],[45,'tamashiibi']],'izumi');
+S('manjushage','マンジュシャゲ','plant','A','彼','ヒガンバナ','秋の彼岸のころ、葉もないまま真っ赤な花を咲かせる。黄泉ヶ原では、季節をとわずに一面に咲いている。',[66,36,18,22,16,30],[[1,'dokunokiri'],[1,'yakusou'],[30,'higannohana'],[45,'kiseihoushi']],'dokukarada');
+S('yomigaeri','ヨミガエリ','aqua','A','還','クニマス','七十年のあいだ、もういないと思われていた魚。遠い湖でひっそりと生きのびていたところを、ふたたび見つけられた。',[70,30,24,24,22,24],[[1,'mizudeppou'],[1,'sosei'],[30,'daikaishou'],[45,'mizuchinouzu']],'saisei');
+S('mukashigai','ムカシガイ','soft','A','螺','オウムガイ','四億年以上も前から、ほとんど姿を変えずに生きてきた貝。うずまきの殻の中に、はるか昔の海の記憶をしまっている。',[78,30,20,34,10,26],[[1,'kourakatame'],[1,'sumi'],[30,'uchuunosumi'],[45,'ryuuguu']],'teppeki');
+S('kawaso','カワソ','beast','A','獺','ニホンカワウソ','かつて日本中の川にいた、人なつこいカワウソ。もう川では見られなくなったが、黄泉ヶ原の川では、今も楽しそうに魚を追っている。',[64,28,28,20,30,22],[[1,'kamitsuki'],[1,'takatobikomi'],[30,'getsugashu'],[45,'mizuchinouzu']],'subashikoi');
+S('akanetoki','アカネトキ','bird','S','朱','トキ','翼の内側が夕焼けのような朱色にそまる鳥。一度は空から消えかけたが、人と魔生物が力をあわせて、ふたたび空へもどした。',[86,40,30,24,30,36],[[1,'tsuttsuki'],[1,'iyashi'],[30,'seifuu'],[45,'yomiokuri']],'kourin');
+S('yomotsuorochi','ヨモツオロチ','dragon','S','坂','アオダイショウ','黄泉ヶ原と、この世をつなぐ坂を守る大蛇。むかしは家の屋根裏にすみ、ネズミから米を守る、家の守り神だった。',[110,32,40,32,20,24],[[1,'makitsuki'],[1,'kamikudaku'],[30,'yamata'],[50,'yomotsuhirasaka']],'teppeki');
+S('tokoyo','トコヨ','myst','SS','常','ニホンカワウソ','黄泉ヶ原の番人。ハザマ所長が若いころ、はじめて配合して生まれたカワウソが、長い時をへて番人となった姿。いまも所長の帰りを待っている。',[150,60,42,38,34,52],[[1,'tamashiibi'],[1,'getsugashu'],[50,'yomiokuri'],[70,'tokoyonohi']],'tokoyonomori',true);
+
+Object.assign(DRAW,{
+  kumanomi:g=>{g.e(24,44,18,2,'#2a4a7a');[[8,30,6],[13,35,5],[38,33,6]].forEach(([a,b,r])=>{g.l(a,44,a+(a<24?-2:2),b,'#c86aa8',2);g.e(a+(a<24?-2:2),b,1.8,1.8,'#f29ad8');});g.p([[33,27],[44,20],[42,27],[44,34]],'#f28a2a');g.e(23,27,13,9,'#f28a2a');[17,25].forEach(x=>{g.r(x,18,3,18,'#f6f2ea');g.r(x+3,18,1,18,'#1a1a1a');});g.r(32,21,2,12,'#f6f2ea');g.p([[18,18],[24,13],[31,18]],'#f28a2a');g.l(18,18,31,18,'#1a1a1a',1);g.e(13,25,3,3,'#f6f2ea');g.e(13,25,2,2,'#101018');g.r(12,24,1,1,'#ffffff');g.r(10,29,3,1,'#a84a1a');},
+  yashigani:g=>{g.e(24,46,21,2,'#2a2a30');LEGS(g,[[16,36,8,45],[19,38,13,47],[30,38,35,47],[33,36,40,45]],'#6a4ab0',2.5);g.e(24,31,13,9,'#7a5ac8');g.e(24,28,10,5,'#9a7ae0');for(let x=16;x<=32;x+=4)g.l(x,24,x,36,'#5a3a98',1);g.e(10,26,6,5,'#8a6ad8');g.p([[5,23],[1,19],[8,22]],'#8a6ad8');g.e(38,26,6,5,'#8a6ad8');g.p([[43,23],[47,19],[40,22]],'#8a6ad8');g.l(20,24,18,15,'#6a4ab0',1.5);g.l(28,24,30,15,'#6a4ab0',1.5);g.eye(18,15);g.eye(30,15);g.e(42,16,5,4,'#8a6a3a');g.e(42,15,3,2,'#a8844a');},
+  hirugi:g=>{g.r(0,40,48,8,'#2a6aa8');for(let i=0;i<6;i++)g.r(i*9,42,6,1,'#6aaad8');[[10,30],[16,28],[24,27],[32,28],[38,30]].forEach(([a,b])=>g.path([[24,b-8],[a,b],[a+(a<24?-2:2),46]],'#6a5040',2));g.r(22,16,4,14,'#7a5a46');g.e(24,13,16,9,'#3a8a3a');g.e(17,10,8,6,'#4a9a4a');g.e(31,10,8,6,'#4a9a4a');g.e(24,7,8,5,'#5aaa5a');[[12,16],[36,15],[26,18]].forEach(([a,b])=>g.l(a,b,a,b+6,'#6a8a3a',1.5));g.eye(20,22);g.eye(28,22);},
+  ookoumori:g=>{g.p([[24,22],[2,14],[6,24],[1,32],[10,30],[14,38],[24,30]],'#3a2a2a');g.p([[24,22],[46,14],[42,24],[47,32],[38,30],[34,38],[24,30]],'#3a2a2a');[[6,24],[10,30],[42,24],[38,30]].forEach(([a,b])=>g.l(24,24,a,b,'#5a4040',1));g.e(24,28,7,9,'#6a4a2a');g.e(24,26,5,6,'#c8843a');g.e(24,17,7,6,'#8a5a2a');g.p([[18,14],[17,6],[22,12]],'#6a4a2a');g.p([[30,14],[31,6],[26,12]],'#6a4a2a');g.e(21,16,1.8,1.8,'#101018');g.e(27,16,1.8,1.8,'#101018');g.r(20,15,1,1,'#ffffff');g.r(26,15,1,1,'#ffffff');g.e(24,20,2,1.2,'#2a1a1a');g.e(36,40,4,3,'#f2a03a');g.e(36,39,1.5,1,'#5aa03a');},
+  oogomadara:g=>{const W=(pts)=>{g.p(pts,'#f6f4ee');};W([[24,22],[4,8],[2,22],[22,28]]);W([[24,22],[44,8],[46,22],[26,28]]);W([[24,26],[8,32],[12,44],[23,32]]);W([[24,26],[40,32],[36,44],[25,32]]);[[8,13],[13,18],[6,20],[17,12],[40,13],[35,18],[42,20],[31,12],[12,36],[15,40],[36,36],[33,40],[10,26],[38,26]].forEach(([a,b])=>g.e(a,b,1.6,1.6,'#1a1a22'));g.l(24,20,4,8,'#1a1a22',1);g.l(24,20,44,8,'#1a1a22',1);g.e(24,26,2.5,9,'#2a2a30');g.e(24,16,2.5,2.5,'#2a2a30');g.path([[23,14],[19,6]],'#2a2a30',1);g.path([[25,14],[29,6]],'#2a2a30',1);g.e(24,42,4,5,'#f2c43a');g.e(23,41,1.5,2.5,'#fff2a0');},
+  erabu:g=>{chain(g,[[12,20],[18,28],[28,30],[36,36],[30,42],[18,42],[10,40]],5,1.6,'#5aa0d8');for(let i=0;i<7;i++){const t=i/6;g.e(12+t*24+(i>4?-14:0),24+t*14+(i>4?2:0),2,4,'#1a2230');}g.e(11,18,6.5,5,'#5aa0d8');g.e(10,20,4,2,'#8ac8f0');g.r(6,15,8,2,'#1a2230');g.eye(9,17);g.l(4,21,1,24,'#e8402c',1);g.l(1,24,0,22,'#e8402c',1);g.l(1,24,0,26,'#e8402c',1);[[38,14],[42,10],[44,16]].forEach(([a,b])=>g.e(a,b,1.6,1.6,'#bfe8ff'));},
+  kijimuna:g=>{g.e(24,45,16,2,'#2a3a2a');g.path([[16,36],[13,46]],'#a8542a',3);g.path([[30,36],[33,46]],'#a8542a',3);g.e(24,31,8,9,'#c8743a');g.r(17,26,14,3,'#3a8a3a');g.path([[16,28],[9,22],[6,26]],'#c8743a',3);g.path([[32,28],[39,22],[42,26]],'#c8743a',3);g.e(24,18,9,8,'#d88a4a');[[14,12],[18,7],[24,5],[30,7],[34,12],[13,19],[35,19]].forEach(([a,b])=>g.e(a,b,4,3.5,'#e8402c'));g.e(24,10,8,4,'#f2603a');g.eye(20,18);g.eye(28,18);g.r(22,23,4,1,'#6a2a14');[[4,10],[42,6],[44,34],[6,36]].forEach(([a,b],i)=>{g.e(a,b,2.5,3,'#ff9a3a');g.e(a,b+.5,1.2,1.5,'#fff2a0');});},
+  oniitomaki:g=>{g.e(24,46,20,2,'#1e3a6a');g.p([[24,16],[2,30],[10,34],[24,30],[38,34],[46,30]],'#2a3448');g.p([[24,20],[6,30],[24,28],[42,30]],'#3a4a64');g.path([[24,30],[26,40],[30,47]],'#2a3448',1.5);g.e(24,22,8,7,'#3a4a64');g.p([[17,18],[15,10],[20,16]],'#2a3448');g.p([[31,18],[33,10],[28,16]],'#2a3448');g.e(24,26,5,2,'#e8eef6');for(let x=21;x<=27;x+=2)g.r(x,25,1,2,'#9aa8b8');g.e(19,20,1.8,1.8,'#101018');g.e(29,20,1.8,1.8,'#101018');[[8,8],[14,4],[36,6],[42,10]].forEach(([a,b])=>g.e(a,b,1.6,1.4,'#bfe8ff'));},
+  nirai:g=>{g.e(24,46,22,2,'#1e5a8a');g.p([[38,26],[47,16],[44,27],[47,38]],'#3a5a8a');g.p([[20,18],[26,8],[30,18]],'#3a5a8a');g.e(22,28,19,11,'#4a6a9a');g.e(20,33,15,5,'#e8eef6');for(let i=0;i<18;i++)g.e(8+(i*7)%28,20+(i*5)%10,1.2,1.2,'#f2f6fa');g.r(3,26,8,2,'#2a3a5a');g.e(8,24,1.8,1.8,'#101018');g.p([[12,38],[16,44],[20,38]],'#3a5a8a');g.e(8,8,4,3,'#ffd36a');g.e(8,8,2,1.5,'#fff6d8');[[16,4],[30,3],[40,8]].forEach(([a,b])=>g.r(a,b,2,2,'#ffe08a'));},
+  yomibotaru:g=>{for(let i=0;i<10;i++)g.e(4+(i*13)%40,6+(i*11)%34,1.2,1.2,i%2?'#9af2ff':'#c8ffd8');g.p([[24,24],[12,12],[8,22],[22,28]],'#dce8f6');g.p([[24,24],[36,12],[40,22],[26,28]],'#dce8f6');g.e(24,28,4.5,9,'#2a2a34');g.r(19,20,10,3,'#e8604a');g.e(24,39,6,6,'#d8ff8a');g.e(24,40,9,9,'#d8ff8a',.25);g.e(24,39,3,3,'#fffde0');g.e(24,17,4,3.5,'#2a2a34');g.path([[22,15],[17,7]],'#2a2a34',1);g.path([[26,15],[31,7]],'#2a2a34',1);g.r(21,16,2,2,'#f2f2f2');g.r(25,16,2,2,'#f2f2f2');},
+  manjushage:g=>{g.e(24,46,16,2,'#2a1a1e');g.l(24,46,24,24,'#4a8a3a',2);g.l(18,46,16,34,'#4a8a3a',1.5);g.l(31,46,33,36,'#4a8a3a',1.5);for(let i=0;i<7;i++){const a=-Math.PI+i*Math.PI/6;g.path([[24,20],[24+Math.cos(a)*8,20+Math.sin(a)*7],[24+Math.cos(a)*15,18+Math.sin(a)*12]],'#e8202c',2);g.e(24+Math.cos(a)*15,18+Math.sin(a)*12,1,1,'#ffd36a');}g.e(24,20,6,4,'#d8182a');g.e(16,32,4,3,'#d8182a');g.e(33,34,4,3,'#d8182a');g.eye(21,21);g.eye(27,21);},
+  yomigaeri:g=>{g.e(24,44,20,2,'#2a4a6a');g.p([[34,26],[46,18],[43,26],[46,34]],'#4a5a6a');g.p([[16,18],[22,13],[30,18]],'#5a6a7a');g.e(22,26,15,8,'#6a7a8a');g.e(21,29,12,4,'#c8d0d8');g.l(9,26,36,26,'#9aa8b8',1);for(let i=0;i<7;i++)g.e(14+i*3,22+(i%2)*2,.8,.8,'#2a3a4a');g.e(11,24,2.6,2.6,'#e8eef6');g.r(10,23,2,2,'#101018');g.p([[16,32],[20,38],[24,32]],'#5a6a7a');[[34,10],[38,6],[42,12],[30,4]].forEach(([a,b])=>g.e(a,b,1.6,1.6,'#9af2ff'));g.e(40,9,4,4,'#9af2ff',.2);},
+  mukashigai:g=>{g.e(24,46,20,2,'#1e3a5a');g.e(28,26,15,15,'#f2ece0');for(let a=0;a<6;a++){const t=-Math.PI/2+a*.5;g.path([[28,26],[28+Math.cos(t)*15,26+Math.sin(t)*15]],'#c8643a',2);}g.e(30,27,9,9,'#f2ece0');g.e(30,27,5,5,'#e8dcc8');g.e(31,27,2,2,'#c8a888');g.e(14,32,8,7,'#c8a888');for(let i=0;i<7;i++)g.path([[10,34],[2+i,40+(i%3)],[4+i*2,44]],'#d8b898',1);g.e(11,30,2.2,2.2,'#101018');g.r(10,29,1,1,'#ffffff');},
+  kawaso:g=>{g.e(24,45,20,2,'#2a4a6a');g.path([[34,38],[42,40],[46,34]],'#7a5a3a',4);g.e(26,34,12,8,'#8a6440');g.e(24,37,8,4,'#c8a47a');g.r(16,38,4,7,'#7a5a3a');g.r(30,38,4,7,'#7a5a3a');g.e(14,24,9,8,'#8a6440');g.e(12,27,6,4,'#c8a47a');g.e(8,18,2.5,2,'#7a5a3a');g.e(20,18,2.5,2,'#7a5a3a');g.eye(11,22);g.eye(18,22);g.e(14,26,2,1.4,'#2a1a1a');[[8,28],[6,27],[20,28],[22,27]].forEach(([a,b])=>g.l(a<14?a+3:a-3,b,a,b-1,'#f2f2f2',.6));g.p([[36,22],[44,20],[42,24],[44,28]],'#9ab0c0');g.e(36,24,5,3,'#b8c8d6');},
+  akanetoki:g=>{g.l(22,38,20,46,'#e8504a',1.5);g.l(28,38,30,46,'#e8504a',1.5);g.p([[30,26],[46,20],[44,28],[34,34]],'#f2a08a');g.p([[32,26],[46,22],[38,30]],'#f28a6a');g.e(26,30,12,9,'#f6f0ec');g.e(27,28,8,5,'#f2c8b8');g.e(15,20,6,6,'#f6f0ec');g.e(12,20,3.5,4,'#e8402c');g.path([[10,22],[4,28],[2,34]],'#2a2a2a',2);g.e(13,18,1.6,1.6,'#f2c43a');g.r(13,18,1,1,'#101018');g.path([[18,15],[22,12],[24,14]],'#f6f0ec',1.5);},
+  yomotsuorochi:g=>{chain(g,[[14,16],[20,26],[30,30],[38,36],[32,44],[18,44],[10,40],[14,34]],7,1.5,'#4a6a5a');for(let i=0;i<10;i++)g.e(14+(i*7)%26,24+(i*5)%20,1.6,1,'#2a3a32');g.e(13,14,9,7,'#5a7a6a');g.e(12,17,6,3,'#8aa898');g.p([[6,10],[3,4],[10,9]],'#3a5a4a');g.e(10,12,2.4,2.2,'#e8d24a');g.r(10,11,1,2,'#101018');g.e(17,12,2.4,2.2,'#e8d24a');g.r(17,11,1,2,'#101018');g.l(6,19,2,22,'#e8402c',1);g.l(2,22,0,20,'#e8402c',1);g.l(2,22,0,24,'#e8402c',1);[[36,10],[40,6],[44,12]].forEach(([a,b])=>g.e(a,b,1.6,1.6,'#9af2ff'));},
+  tokoyo:g=>{for(let i=0;i<12;i++){const a=i*Math.PI/6;g.e(24+Math.cos(a)*21,24+Math.sin(a)*21,1.4,1.4,i%2?'#9af2ff':'#ffd36a');}g.path([[34,36],[42,36],[46,28],[44,22]],'#b8a07a',4);g.e(44,21,2.5,2.5,'#fff6d8');g.e(26,32,12,8,'#c8b090');g.e(24,35,8,4,'#f2e8d0');g.r(16,36,4,8,'#b8a07a');g.r(30,36,4,8,'#b8a07a');g.e(15,22,9,8,'#c8b090');g.e(13,25,6,4,'#f2e8d0');g.e(9,16,2.5,2,'#b8a07a');g.e(21,16,2.5,2,'#b8a07a');g.e(12,20,1.8,1.8,'#7af0ff');g.e(19,20,1.8,1.8,'#7af0ff');g.e(15,24,2,1.4,'#3a2a2a');g.p([[10,13],[15,8],[20,13]],'#ffd36a');g.r(14,10,2,3,'#fff6d8');g.e(28,26,3,2,'#e8402c');},
+});
+
+Object.assign(SCENES,{
+  reef:s=>{s.sky(34);s.R(0,30,192,26,'#1aa0b8');for(let i=0;i<14;i++)s.R((i*31)%184,32+(i*5)%20,8,1,'#7ae0e8');s.R(0,54,192,18,'#f2e8c8');for(let i=0;i<22;i++)s.R((i*23)%190,58+(i*11)%12,2,1,'#d8c898');
+    [[24,54],[160,52]].forEach(([x,y])=>{s.R(x,y-26,3,26,'#8a6a46');[[-14,-4],[-10,-8],[0,-10],[10,-8],[14,-3]].forEach(([dx,dy])=>{s.R(x+dx*(dx<0?1:0),y-27+dy*.3,Math.abs(dx),2,'#3a9a4a');});s.CI(x+1,y-27,4,'#4aaa4a');});
+    s.R(70,44,50,6,'#e8eef6');s.R(78,40,30,4,'#d8dce4');s.R(92,30,1,10,'#6a6a6a');s.R(93,31,10,6,'#e8402c');
+    if(s.night)for(let i=0;i<20;i++)s.L((i*41+5)%192,34+(i*7)%18,1,1,'#7af0ff');},
+  mangrove:s=>{s.sky(28);s.R(0,28,192,16,'#2a6a3a');for(let i=0;i<12;i++)s.CI(i*17+8,30+(i%3)*2,10,i%2?'#2e7a40':'#3a8a4a');s.R(0,44,192,28,'#3a6a7a');for(let i=0;i<10;i++)s.R((i*37)%180,48+(i*5)%20,10,1,'#6a9aa8');
+    for(let i=0;i<9;i++){const x=10+i*21;s.R(x,36,2,10,'#5a4030');for(let k=-2;k<=2;k++){const ex=x+k*4;for(let y=0;y<12;y++)s.R(Math.round(x+(ex-x)*y/12),44+y,1,1,'#5a4030');}}
+    if(s.eve)for(let i=0;i<14;i++)s.L((i*29+3)%192,30+(i*13)%30,1,1,'#e8ff8a');},
+  coral:s=>{s.L(0,0,192,72,s.night?'#06223a':'#1a6aa8');s.x.fillStyle='rgba(255,255,255,.08)';for(let i=0;i<8;i++)s.x.fillRect(i*26+6,0,6,48);
+    s.R(0,58,192,14,'#e8d8a8');[[14,'#f2605a'],[40,'#f29ad8'],[70,'#ffb03a'],[104,'#f2605a'],[134,'#c89aff'],[164,'#ffb03a'],[184,'#f29ad8']].forEach(([x,c],i)=>{for(let k=0;k<4;k++)s.R(x+k*3-4,58-8-(k%2)*6-(i%3)*3,2,8+(k%2)*6+(i%3)*3,c);s.CI(x,50-(i%3)*3,4,c);});
+    [[50,26],[120,18],[150,34]].forEach(([x,y])=>{s.R(x,y,8,4,'#ffb03a');s.R(x+8,y+1,3,2,'#ffb03a');s.L(x+1,y+1,1,1,'#101018');});
+    for(let i=0;i<10;i++)s.L((i*37)%190,(i*19)%50,2,2,'rgba(220,240,255,.5)');},
+  higan:s=>{s.sky(30);s.MT(40,46,18,140,'#3a3248');s.MT(150,46,22,150,'#2e2840');s.R(0,40,192,32,'#3a2a2a');
+    for(let i=0;i<60;i++){const x=(i*29)%192,y=44+(i*13)%26;s.R(x,y,2,2,'#e8202c');s.R(x-1,y-1,1,1,'#ff6a5a');s.R(x+2,y-1,1,1,'#ff6a5a');}
+    s.R(94,34,4,12,'#6a6a72');s.R(90,32,12,3,'#7a7a82');s.L(95,36,2,3,s.eve?'#f6d27a':'#4a4a52');
+    if(s.night)for(let i=0;i<16;i++)s.L((i*43+9)%192,22+(i*11)%22,1,1,'#9af2ff');},
+  wasuregawa:s=>{s.sky(26);s.R(0,26,192,46,'#2a2a3e');s.x.fillStyle=`rgba(200,210,230,${s.night?.12:.22})`;for(let i=0;i<4;i++)s.x.fillRect(0,26+i*5,192,3);
+    s.R(0,44,192,16,'#3a5a7a');for(let i=0;i<12;i++)s.R((i*31)%180,46+(i*5)%12,10,1,'#6a8aa8');s.R(0,60,192,12,'#4a4a52');for(let i=0;i<18;i++)s.CI((i*23)%190,64+(i*7)%6,2,'#6a6a72');
+    s.R(60,46,70,3,'#8a2a24');s.R(66,40,58,2,'#a83a2a');for(let x=64;x<128;x+=10)s.R(x,40,2,8,'#8a2a24');
+    for(let i=0;i<14;i++)s.L(20+(i*13)%160,30+(i*7)%14,1,1,'#9af2ff');},
+  yomieki:s=>{s.L(0,0,192,72,'#0a0a1a');for(let i=0;i<50;i++)s.L((i*53)%192,(i*29)%40,1,1,i%4?'#8a94c8':'#ffffff');s.CI(150,14,7,'#f4f0d8',1);
+    s.R(0,50,192,4,'#5a5a62');s.R(0,54,192,18,'#2a2a32');s.R(0,58,192,1,'#8a8a8a');s.R(0,64,192,1,'#8a8a8a');for(let x=0;x<192;x+=8)s.R(x,57,4,9,'#3e3024');
+    s.R(30,30,60,20,'#3a3438');s.R(26,26,68,5,'#5a4a42');s.R(40,36,10,14,'#1a1418');s.L(58,36,14,8,'#f6d27a');s.R(100,22,2,28,'#4a4a52');s.R(94,22,30,9,'#f4f2eb');s.R(94,29,30,2,'#f2b13c');s.L(104,24,10,3,'#1b2133');
+    for(let i=0;i<10;i++)s.L(120+(i*7)%60,30+(i*5)%18,1,1,'#9af2ff');},
+});
+
+const _tw=(o)=>{TOWNS.push(o);TOWN[o.id]=o;};
+_tw({id:'sango',code:'JG08',name:'珊瑚島',roma:'Sangojima',kind:'南の島',scene:'reef',sento:'ガジュマルの民宿',sentoP:800,req:'hinoshima',
+  desc:'火ノ島から南へ、船で一晩。青い海と白い砂浜、マングローブの森にかこまれた島。所長が若いころ、ひと夏をすごした場所だという。',
+  fields:[
+    {id:'shirahama',name:'白い砂浜',scene:'reef',lv:[96,108],max:3,table:[['kumanomi',3],['yashigani',3,'n'],['erabu',2],['ookoumori',2,'n'],['hidanedori',1.5,'d'],['kintoki',1.5]]},
+    {id:'hirugimori',name:'マングローブの森',scene:'mangrove',lv:[104,116],max:3,table:[['hirugi',3],['ookoumori',2],['oogomadara',2,'d'],['yashigani',2],['michioshie',1.5],['kijimuna',.5,'n']]},
+    {id:'sangosho',name:'珊瑚礁の海',scene:'coral',lv:[114,128],max:3,req:'sango',table:[['kumanomi',2],['erabu',2],['oniitomaki',1],['oogomadara',1.5],['kijimuna',1,'n'],['sakamata',.6]]},
+  ],
+  boss:{title:'珊瑚礁のぬし',scene:'coral',text:'海面が大きく盛りあがり、つばさのような影が月をかくした。',foes:[['kijimuna',120],['oniitomaki',126],['erabu',120]],reward:120000,drops:{saino:3,tenpu:2,kakusei:1},clear:'珊瑚礁の海へもぐれるようになった。海のかなたで、星もようの影がゆれている……'},
+  ura:{title:'海のかなたの楽園・ニライ',scene:'coral',text:'海の底から星空がわきあがるように、星もようの大きな魚があらわれた。',foes:[['oniitomaki',142],['nirai',150],['kijimuna',142]],reward:300000,drops:{tenpu:4,saino:4,kakusei:2},clear:'ニライに認められた！ 島の海に、ゆたかな幸がもどってきた。'},
+});
+_tw({id:'yomi',code:'JG09',name:'黄泉ヶ原',roma:'Yomigahara',kind:'終着駅',scene:'yomieki',sento:'無人駅の待合室',sentoP:1200,req:'sango',
+  desc:'時刻表にのっていない、ジェンガルア線の終着駅。赤い花がどこまでも咲き、川の向こうには、もういなくなったはずの魔生物たちが暮らしている。',
+  fields:[
+    {id:'higanno',name:'彼岸花の原',scene:'higan',lv:[135,150],max:3,table:[['manjushage',3],['yomibotaru',2,'n'],['akanetoki',1,'d'],['kawaso',1],['yozakura',1.5],['kokonobi',.5,'n']]},
+    {id:'wasure',name:'忘れ川のほとり',scene:'wasuregawa',lv:[145,162],max:3,table:[['yomigaeri',3],['kawaso',2],['mukashigai',2],['yomibotaru',2,'n'],['inishieuo',1],['yomizuku',1,'n']]},
+    {id:'sakanoue',name:'ひらさかの上',scene:'yomieki',lv:[158,178],max:3,req:'yomi',table:[['akanetoki',2],['yomotsuorochi',.6],['mukashigai',2],['manjushage',2],['horobiookami',.5],['kawaso',1.5]]},
+  ],
+  boss:{title:'ひらさかの番蛇',scene:'wasuregawa',text:'川の向こうの坂から、山のような大蛇がずるりと身をのり出した。',foes:[['akanetoki',172],['yomotsuorochi',178],['kawaso',172]],reward:400000,drops:{tenpu:4,kakusei:2,kettou:2},clear:'ひらさかの上へ登れるようになった。坂の上の灯の下で、だれかが待っている……'},
+  ura:{title:'黄泉ヶ原の番人・トコヨ',scene:'yomieki',text:'灯の下で待っていた一匹のカワウソが、ゆっくりと立ちあがった。そのひとみは、どこか所長に似ていた。',foes:[['yomotsuorochi',190],['tokoyo',200],['akanetoki',190]],reward:1000000,drops:{tenpu:6,kakusei:3,kettou:3},clear:'トコヨに認められた！ ジェンガルア線、全線踏破！'},
+});
+TOWN.hinoshima.fields[2].table.push(['kumanomi',.6]);
+TOWNS.forEach(t=>t.fields.forEach(f=>f.table.forEach(([s,,tm])=>{const x=t.name+'・'+f.name+(tm?`(${TM[tm]})`:'');(HAB[s]=HAB[s]||[]).includes(x)||HAB[s].push(x);})));
+HAB.nijitama=['天狗岳から先の探索先(ごくまれ)'];
+
+RIVALS.sango={team:[['oniitomaki',118,22],['kijimuna',119,22],['yukemuri',120,22]],reward:{yen:100000,items:{tenpu:2,kakusei:1}},
+  pre:[['アオイ','見て見て、この島の海！ ……って、遊びに来たんじゃなかった。'],['アオイ','所長の昔のノート、わたしも少し読んだんだ。この島で、所長はいちど配合師をやめようとしたんだって。'],['アオイ','……だからこそ、ここで負けたくない！']],
+  post:[['アオイ','はぁ……やっぱりきみは強いや。'],['アオイ','ノートの最後のページにね、「トコヨ、すまない」って書いてあったの。トコヨって、だれなんだろう。']]};
+RIVALS.yomi={team:[['akanetoki',168,30],['nirai',170,30],['oniitomaki',168,30]],reward:{yen:300000,items:{tenpu:3,kakusei:2}},
+  pre:[['アオイ','ここが終着駅……。時刻表にない駅って、ほんとうにあったんだね。'],['アオイ','最初にきみと会ったころ、わたし、配合なんて勝つための道具だと思ってた。'],['アオイ','でも今はちがう。この子たちといっしょに、ここまで来たんだ。……全力でいくよ！']],
+  post:[['アオイ','……ありがとう。きみがライバルで、ほんとうによかった。'],['アオイ','坂の上には、きみが行って。所長がずっと会いたかっただれかが、待ってる気がするんだ。']]};
+Object.assign(STORY,{
+  visit_sango:[['ハザマ所長(電話)','珊瑚島に着いたか。……なつかしいのう。わしが若いころ、ひと夏をすごした島じゃ。'],['ハザマ所長(電話)','あの夏、わしは相棒を……いや、この話は、まだやめておこう。'],['ハザマ所長(電話)','島の魔生物は、これまでとは比べものにならんほど強い。じゅうぶんに育ててから、森の奥へ進むのじゃぞ。']],
+  boss_sango:[['オニイトマキ','……ザザァ……'],['ハザマ所長(電話)','珊瑚礁のぬしを鎮めたか。ほんとうに強くなったのう。'],['ハザマ所長(電話)','……話しておこう。わしがはじめて配合で生んだのは、トコヨという名のカワウソじゃった。'],['ハザマ所長(電話)','この島で、わしの無茶な配合のせいで、トコヨは弱ってしまった。そしてある朝、姿を消した。'],['ハザマ所長(電話)','それから、わしは配合が怖くなった。研究所を開いたのは、二度と同じあやまちをくり返さないためなんじゃ。']],
+  boss_sango_ura:[['ニライ','……オォォン……'],['ハザマ所長(電話)','ニライに認められたか！'],['ハザマ所長(電話)','島の言い伝えでは、海のかなたの楽園と、もうひとつ……いなくなった者が行く「黄泉ヶ原」があるという。'],['ハザマ所長(電話)','ジェンガルア線の線路が、そこまでのびたらしい。時刻表にない、終着駅じゃ。……行ってくれるか。']],
+  visit_yomi:[['ハザマ所長(電話)','……黄泉ヶ原に着いたか。電話が、ずいぶん遠く聞こえるのう。'],['ハザマ所長(電話)','そこには、もうこの世では見られなくなった魔生物たちが暮らしておる。カワウソも、トキも……。'],['ハザマ所長(電話)','もし……もしも、トコヨに会えたら。わしは元気だと、伝えておくれ。']],
+  boss_yomi:[['ヨモツオロチ','……シュルル……'],['ハザマ所長(電話)','坂の番蛇を鎮めたか……！'],['ハザマ所長(電話)','坂の上に灯がともっておるじゃろう。あれは、だれかを待つ灯じゃ。']],
+  boss_yomi_ura:[['トコヨ','……キュウ。'],['トコヨ','(トコヨは、きみの手の中の配合録をじっと見つめ、それから空を見あげた)'],['ハザマ所長(電話)','……トコヨ？ トコヨなのか！？'],['ハザマ所長(電話)','すまなかった……。わしはずっと、おまえに謝りたかったんじゃ。'],['トコヨ','キュウ、キュウ！'],['アオイ','所長、泣いてる……。トコヨ、怒ってなんかないよ。だって、ずっと待ってたんだもん。'],['ハザマ所長(電話)','……ありがとう。きみのおかげで、わしはようやく、あの夏から歩き出せる。'],['ハザマ所長(電話)','魔生物と人が、たがいを思いやって血をつなぐ。それが配合じゃ。きみは、それを最後までやりとげた。'],['','ジェンガルア線 全線踏破 おめでとう！'],['ハザマ所長(電話)','さて……配合の道に終わりはない。図鑑の空白も、まだ残っておるじゃろう？ これからも、よろしくたのむぞ。']],
+});
+RECIPES.push(
+  {a:'kintoki',b:'kumanomi',out:'oniitomaki',plusSum:16,hint:'民宿のおばあ「赤い魚としまの魚。+値の合計16以上で配合すると、空を飛ぶエイが生まれるさあ」'},
+  {a:'hirugi',b:{fam:'spirit',minRank:4},out:'kijimuna',plusSum:12,hint:'島の子ども「マングローブの木に、B以上の霊系を+値の合計12以上で配合すると、キジムナーが出てくるんだって！」'},
+  {a:'oniitomaki',b:'sakamata',out:'nirai',plusSum:32,aGen:7,hint:'浜の石碑「第7世代以上の空飛ぶエイと、海の王。+値の合計32以上の血が、楽園の魚を呼ぶ」'},
+  {a:'mizuchi',b:'erabu',out:'yomotsuorochi',plusSum:20,hint:'駅の落書き「ミズチとエラブ。+値の合計20以上で、坂を守る大蛇になる」'},
+  {a:'kawaso',b:'yomizuku',out:'tokoyo',plusSum:40,aGen:8,hint:'所長の古いノート「第8世代以上のカワソと、黄泉の鳥ヨミズク。+値の合計40以上……トコヨを生んだ配合は、たしかこうじゃった」'},
+);
+REQUESTS.push(
+  {id:'r43',town:'sango',from:'民宿のおばあ',text:'ヤシガニを見せておくれ。孫に、島の生き物を教えてやりたくてね。',need:{sp:'yashigani'},reward:{yen:20000,items:{tea:5}}},
+  {id:'r44',town:'sango',from:'島の子ども',text:'金色のさなぎ、ほんとにあるの？ オオゴマダラ見せて！',need:{sp:'oogomadara'},reward:{yen:30000,items:{saino:1}}},
+  {id:'r45',town:'sango',from:'海の学者',text:'+20以上のオニイトマキの跳躍を記録したい。',need:{sp:'oniitomaki',minPlus:20},reward:{yen:150000,items:{tenpu:2}}},
+  {id:'r46',town:'sango',from:'ガジュマルの民宿の主人',text:'第15世代以上、+40以上。島の海みたいに深い血の魔生物、いるかい？',need:{gen:15,minPlus:40},reward:{yen:300000,items:{tenpu:3,kakusei:1}}},
+  {id:'r47',town:'yomi',from:'待合室のおじいさん',text:'子どものころ川で見たカワウソ……もう一度だけ会いたいなあ。',need:{sp:'kawaso'},reward:{yen:50000,items:{kettou:1}}},
+  {id:'r48',town:'yomi',from:'駅員さん(?)',text:'ヨミガエリを見せてくれませんか。いなくなっても、また会えることがあると信じたいんです。',need:{sp:'yomigaeri'},reward:{yen:80000,items:{saino:2}}},
+  {id:'r49',town:'yomi',from:'ハザマ所長',text:'+30以上のアカネトキを見せておくれ。トキの空を取りもどした人たちに、報告したいのじゃ。',need:{sp:'akanetoki',minPlus:30},reward:{yen:300000,items:{tenpu:3}}},
+  {id:'r50',town:'yomi',from:'トコヨ',text:'(トコヨは、+50以上の魔生物を見たがっているようだ)',need:{minPlus:50},reward:{yen:1000000,items:{tenpu:5,kakusei:3}}},
+);
+DEX_MS.push({n:133,reward:{yen:500000,items:{tenpu:3,kakusei:2}}},{n:141,reward:{yen:1000000,items:{tenpu:5,kakusei:3,kettou:3}}});
+
+Object.assign(SONGS,{
+  sango:{bpm:104,ch:[
+    {w:'p25',v:.045,o:5,m:'c4 e8 f8 g4 b4 >c4 <b8 g8 f4 e4 g4 f8 e8 c4 e8 f8 g2 r4 c4 e8 f8 g4 b4 >c4 e4 d8 c8 <b8 g8 f4 e8 f8 g4 e8 c8 e4 c2 r4'},
+    {w:'tri',v:.08,o:3,m:'c4 g4 c4 g4 f4 >c4 <f4 >c4 <e4 b4 e4 b4 f4 g4 c2'},
+    {w:'nz',v:.03,m:'k8 h8 h8 s8 h8 k8 s8 h8'}]},
+  oniitomaki:{bpm:144,ch:[
+    {w:'saw',v:.03,o:4,m:'d8 f8 a8 d8 >c4 <a4 g8 a8 b-8 a8 g8 f8 e4 d8 e8 f8 g8 a4 >d4 c8 <b-8 a8 g8 f4 e4 d8 f8 a8 >d8 c8 <a8 g8 e8 f4 g4 a2'},
+    {w:'tri',v:.1,o:2,m:'d8 d8 a8 d8 b-8 b-8 f8 b-8 g8 g8 d8 g8 a8 a8 e8 a8'},
+    {w:'nz',v:.045,m:'k8 s8 k8 k8 s8 k8 s8 s8'}]},
+  nirai:{bpm:92,ch:[
+    {w:'p25',v:.045,o:5,m:'e4 g4 b4 >e2 d4 <b4 a4 g2 e4 f+4 g4 a4 b2. r4 >c4 <b4 a4 g4 f+4 e4 d4 e4 g4 a4 b4 >d4 e1'},
+    {w:'tri',v:.1,o:3,m:'e2 b2 c2 g2 a2 e2 b2 b2'},
+    {w:'nz',v:.03,m:'k4 h4 s4 h4'}]},
+  yomi:{bpm:80,ch:[
+    {w:'p25',v:.04,o:5,m:'a4 >c4 e2 d4 c4 <b2 a4 g4 a4 >c4 <b2. r4 a4 >c4 e4 g4 f4 e4 d2 c4 <b4 a4 g+4 a2. r4'},
+    {w:'tri',v:.08,o:3,m:'a2 e2 f2 c2 d2 a2 e2 e2'},
+    {w:'nz',v:.02,m:'k2 h4 h4'}]},
+  orochi:{bpm:156,ch:[
+    {w:'saw',v:.032,o:4,m:'a8 a8 >c8 <a8 >e4 d4 c8 <b8 a8 g+8 a4 e4 f8 f8 a8 f8 >d4 c4 <b8 a8 g+8 f8 e4 e4 a8 a8 >c8 <a8 >e4 g4 f8 e8 d8 c8 <b4 >c4 <a2 r2'},
+    {w:'tri',v:.1,o:2,m:'a8 a8 e8 a8 f8 f8 c8 f8 d8 d8 a8 d8 e8 e8 b8 e8'},
+    {w:'nz',v:.045,m:'k8 k8 s8 k8 k8 k8 s8 s8'}]},
+  tokoyo:{bpm:72,ch:[
+    {w:'p25',v:.045,o:5,m:'g4 a4 b4 >d4 e2 d4 <b4 a2 g4 e4 g2. r4 >c4 <b4 a4 g4 a2 b4 >d4 e4 d4 <b4 a4 g1'},
+    {w:'tri',v:.09,o:3,m:'g2 d2 e2 b2 c2 g2 d2 g2'},
+    {w:'nz',v:.025,m:'k2 h2'}]},
+});
+Object.assign(TOWN_BGM,{sango:'sango',yomi:'yomi'});
+Object.assign(BOSS_BGM,{sango:'oniitomaki',sango_ura:'nirai',yomi:'orochi',yomi_ura:'tokoyo'});
+Object.assign(SONG_NAME,{sango:'珊瑚島',oniitomaki:'珊瑚礁のぬし',nirai:'海のかなたの楽園',yomi:'黄泉ヶ原',orochi:'ひらさかの番蛇',tokoyo:'トコヨ'});
+
 /* ========== ユーティリティ ========== */
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const ri=(a,b)=>Math.floor(a+Math.random()*(b-a+1));
@@ -3018,13 +3191,14 @@ function ai(c){
 function fx(c,type){B.fx={uid:c.mon.uid,type};}
 function pop(c,t,k){(B.pops=B.pops||[]).push({uid:c.mon.uid,t,k});}
 function damage(t,d){
-  if(d>1&&has(t,'sousei'))d=Math.max(1,Math.floor(d*.7));else if(d>1&&has(t,'shishin'))d=Math.max(1,Math.floor(d*.85));
+  if(d>1&&has(t,'sousei'))d=Math.max(1,Math.floor(d*.7));else if(d>1&&(has(t,'shishin')||has(t,'tokoyonomori')))d=Math.max(1,Math.floor(d*.85));
   if(t.guard&&d>1)d=Math.max(1,Math.ceil(d/2));
   if(d>1&&has(t,'kago'))d=Math.max(1,Math.floor(d*.8));
   t.hp-=d;fx(t,'hit');pop(t,'-'+d,'dmg');sfx('hit');log(`${t.label}に${d}のダメージ！`);
   if(t.sts.sleep&&t.hp>0){delete t.sts.sleep;log(`${t.label}は目をさました！`);}
   if(t.hp<=0){
     if((t.shib||0)<tl(t,'shibutoi')){t.shib=(t.shib||0)+1;t.hp=1;log(`${t.label}はしぶとく持ちこたえた！`);}
+    else if(has(t,'tokoyonomori')&&!t.tkm){t.tkm=true;t.hp=1;log(`${t.label}は常世の灯に守られ、立ちあがった！`);}
     else{t.hp=0;t.sts={};log(t.side==='enemy'?`${t.label}をたおした！`:`${t.label}はたおれてしまった！`);}
   }
 }
@@ -3339,7 +3513,7 @@ function explore(fid){
   const tb=f.table.filter(([,,tm])=>timeOK(tm,state.time)).map(([s,w])=>({w,s}));
   const foes=[];for(let i=0;i<n;i++)foes.push([wpick(tb).s,ri(f.lv[0],f.lv[1])]);
   const mrate=.035*((state.lure||0)>0?4:1);if(state.lure>0)state.lure--;
-  if(Math.random()<mrate){const pool={komorebi:['haganetsubu','koganetsubu','koganetsubu'],kasumi:['haganetsubu','koganetsubu'],shiomi:['haganetsubu','gintachi','gintachi'],tengu:['gintachi','nijitama','nijitama'],mayoiga:['nijitama','nijitama','gintachi'],ryuhyo:['nijitama','gintachi','nijitama'],hinoshima:['gintachi','nijitama','nijitama']}[t.id]||['haganetsubu'];foes[0]=[pick(pool),ri(f.lv[0],f.lv[1])];}
+  if(Math.random()<mrate){const pool={komorebi:['haganetsubu','koganetsubu','koganetsubu'],kasumi:['haganetsubu','koganetsubu'],shiomi:['haganetsubu','gintachi','gintachi'],tengu:['gintachi','nijitama','nijitama'],mayoiga:['nijitama','nijitama','gintachi'],ryuhyo:['nijitama','gintachi','nijitama'],hinoshima:['gintachi','nijitama','nijitama'],sango:['gintachi','nijitama','ougontsubu'],yomi:['nijitama','ougontsubu','hakugin']}[t.id]||['haganetsubu'];foes[0]=[pick(pool),ri(f.lv[0],f.lv[1])];}
   startBattle(foes,{field:`${t.name}・${f.name}`,scene:f.scene});
 }
 

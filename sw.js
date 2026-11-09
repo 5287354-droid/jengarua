@@ -1,5 +1,5 @@
-/* ジェンガルア配合録 オフライン用 (版 e33e99eccf) */
-const V='jengarua-e33e99eccf';
+/* ジェンガルア配合録 オフライン用 (版 92ea8221e4) */
+const V='jengarua-92ea8221e4';
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('jengarua-')&&k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});

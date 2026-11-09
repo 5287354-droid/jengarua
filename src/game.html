@@ -467,7 +467,13 @@ h1{font-size:clamp(28px,6vw,44px)} h2{font-size:24px} h3{font-size:18px} h4{font
 .g-SSS{background:linear-gradient(90deg,#ffd36a,#ff7ab8,#7ab8ff);-webkit-background-clip:text;background-clip:text;color:transparent} .gt-SSS{fill:#ffd36a}
 .stars{font-family:var(--f-disp);font-weight:400;font-size:18px;color:#ffe08a;text-shadow:0 0 8px #ffd36a88}
 .gshrine{border-color:#c89aff;background:radial-gradient(600px 220px at 50% 0%,#3a2a6a,transparent),linear-gradient(180deg,var(--panel2),var(--panel))}
-.gpick{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.gpick-sp{flex:none}
+.gpick{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:12px;border-radius:12px;background:radial-gradient(260px 160px at 18% 50%,color-mix(in srgb,var(--bc,#c89aff) 22%,transparent),transparent)}
+.gbans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.gban{display:flex;align-items:center;gap:6px;min-width:0;padding:6px 8px;border-radius:10px;border:1px solid var(--line2);background:var(--bg2);cursor:pointer;text-align:left;font-family:var(--f-disp);font-size:13px;line-height:1.2;color:var(--muted);transition:border-color .15s,color .15s}
+.gban span{display:flex;flex-direction:column;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gban small{font-size:10px;color:var(--bc)}
+.gban:hover{border-color:var(--bc)}
+.gban.on{color:var(--ink);border-color:var(--bc);background:color-mix(in srgb,var(--bc) 14%,var(--bg2));box-shadow:0 0 0 1px var(--bc),0 0 14px -4px var(--bc)}
+@media (max-width:560px){.gbans{grid-template-columns:repeat(2,minmax(0,1fr))}}.gpick-sp{flex:none}
 .center-t{text-align:center}
 .glist{display:flex;flex-direction:column;gap:4px}
 .grank{font-family:var(--f-disp);font-size:13px}.grank.r6{color:#7fc3f2}.grank.r7{color:#ff9ad8}.grank.r8{background:linear-gradient(90deg,#ffd36a,#ff7ab8,#7ab8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -1957,7 +1963,8 @@ const plusRate=spId=>SP[spId].gacha?(SP[spId].rank>=9?.03:SP[spId].rank===8?.026
 const genBonus=m=>1+Math.min(m.gen||0,10)*.015;
 const capFor=(spId,plus)=>SP[spId].gacha?Math.min(250,80+plus*3):Math.min(250,30+plus*4);
 function dayKey(off=0){const d=new Date(Date.now()+off*864e5);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function weekPickup(){const w=Math.floor((Date.now()/864e5+3)/7),ps=gachaPool(8);const end=new Date((w*7-3+7)*864e5);return {sp:ps[w%ps.length].id,end};}
+const BANNERS=[{sp:'suzaku',n:'南天',c:'#ff7a3a'},{sp:'byakko',n:'西天',c:'#bfefff'},{sp:'seiryu',n:'東天',c:'#4ac8ff'},{sp:'genbu',n:'北天',c:'#8af0a0'}];
+function curBanner(){return BANNERS.find(b=>b.sp===state.gban)||BANNERS[0];}
 function addStars(n,why){state.stars=(state.stars||0)+n;if(why)ui.starNote=`★${n} ${why}`;}
 function firstOwn(id){if(!state.owned[id]&&SP[id]&&!SP[id].gacha)addStars(10,'はじめてなかまにした種族');}
 function dailyRoll(){const t=dayKey();if(!state.daily||state.daily.d!==t)state.daily={d:t,ex:0,win:0,br:0,got:{}};}
@@ -1990,7 +1997,7 @@ function rollRank(guar){
 }
 function gachaPull(n){
   const cost=n===10?GACHA.c10:GACHA.c1;if((state.stars||0)<cost)return;
-  state.stars-=cost;const pu=weekPickup().sp,out=[];
+  state.stars-=cost;const pu=curBanner().sp,out=[];
   for(let i=0;i<n;i++){
     const {r,pity}=rollRank(n===10&&i===9&&!out.some(o=>o.r>=7));
     let sp;if(r===8&&(pity||Math.random()<.5))sp=pu;else sp=pick(gachaPool(r)).id;
@@ -2012,15 +2019,16 @@ function renderGachaResult(){
     <div class="row center gbtns"><button class="btn primary" data-act="gpull" data-n="${g.n}" ${(state.stars||0)>=(g.n===10?GACHA.c10:GACHA.c1)?'':'disabled'}>もう一度(★${g.n===10?GACHA.c10:GACHA.c1})</button><button class="btn" data-act="gview">なかまを見る</button><button class="btn" data-act="gclose">とじる</button></div></div>`;
 }
 function renderGacha(){
-  dailyRoll();const pu=weekPickup(),ps=SP[pu.sp],st=state.stars||0;
+  dailyRoll();const pu=curBanner(),ps=SP[pu.sp],st=state.stars||0;
+  const tabs=`<div class="gbans" role="tablist" aria-label="ピックアップ">${BANNERS.map(b=>`<button class="gban ${b.sp===pu.sp?'on':''}" role="tab" aria-selected="${b.sp===pu.sp}" style="--bc:${b.c}" data-act="gban" data-sp="${b.sp}">${seal(b.sp,'xs',true)}<span><small>${b.n}</small>${SP[b.sp].name}</span></button>`).join('')}</div>`;
   const rows=[8,7,6].map(r=>`<div class="glist"><span class="grank r${r}">${RANKS[r]} ${RANK_TITLE[r]} ・ ${Math.round(GACHA.rate.find(x=>x[0]===r)[1]*1000)/10}%</span><div class="minis">${gachaPool(r).map(s=>`<span class="mini" title="${s.name}">${seal(s.id,'xs',state.seen[s.id]||state.owned[s.id]?true:'sil')}</span>`).join('')}</div></div>`).join('');
   const L=state.login||{streak:0};
   const ms=MISSIONS.map(x=>{const v=missionVal(x.k),got=state.daily.got[x.k],ok=v>=x.goal;return `<div class="ms ${ok&&!got?'ok':''}"><span class="small">${x.n} <span class="num muted">${Math.min(v,x.goal)}/${x.goal}</span></span><b class="num hl">★${x.rw}</b>${got?'<span class="badge good">受取済み</span>':`<button class="btn sm ${ok?'primary':''}" data-act="mission" data-k="${x.k}" ${ok?'':'disabled'}>受け取る</button>`}</div>`;}).join('');
   return `<section class="stack">
     <div class="panel gshrine stack"><span class="eyebrow">ガチャ限定 ・ すぐに戦力になる</span><div class="row between"><h2>星降りの祠</h2><b class="stars num">★ ${st.toLocaleString()}</b></div>
-      <div class="gpick"><div class="gpick-sp">${seal(pu.sp,'xl',true)}</div><div class="stack tight"><span class="tag warn">今週のピックアップ</span><h3>${ps.name}</h3><span class="small">SSS ${RANK_TITLE[8]} ・ ${FAM[ps.fam].n} ・ ${pu.end.getMonth()+1}月${pu.end.getDate()}日まで</span><p class="small muted">${ps.desc}</p><p class="small hl">SSSが出たときの半分は、ピックアップの${ps.name}。</p></div></div>
+      ${tabs}<div class="gpick" style="--bc:${pu.c}"><div class="gpick-sp">${seal(pu.sp,'xl',true)}</div><div class="stack tight"><span class="tag warn">${pu.n}ピックアップ</span><h3>${ps.name}</h3><span class="small">SSS ${RANK_TITLE[8]} ・ ${FAM[ps.fam].n} ・ いつでも選べる</span><p class="small muted">${ps.desc}</p><p class="small hl">SSSが出たときの半分は、ピックアップの${ps.name}。</p></div></div>
       <div class="row center"><button class="btn primary big" data-act="gpull" data-n="1" ${st>=GACHA.c1?'':'disabled'}>1回 ★${GACHA.c1}</button><button class="btn danger-fill big" data-act="gpull" data-n="10" ${st>=GACHA.c10?'':'disabled'}>10連 ★${GACHA.c10}</button></div>
-      <p class="small center-t">10連は<b class="hl">SS以上1体確定</b> ・ 天井まであと<b class="hl num">${GACHA.pity-(state.gpity||0)}回</b>(${GACHA.pity}回でピックアップSSS確定)</p>
+      <p class="small center-t">10連は<b class="hl">SS以上1体確定</b> ・ 天井まであと<b class="hl num">${GACHA.pity-(state.gpity||0)}回</b>(${GACHA.pity}回で選んでいるピックアップのSSS確定 ・ 天井のカウントは4つで共通)</p>
       <details class="rules"><summary>排出される魔生物と確率</summary><div class="stack" style="margin-top:8px">${rows}
         <p class="small muted">ガチャ産の魔生物はLv10で生まれ、はじめからレベル上限が80と高く、能力も高い。そのかわり+値ごとの伸びは配合産の半分以下で、世代ボーナスもつきにくい。四神(SSS)は育てきると、配合で育てきったSSと互角になる。覚醒や配合でたどりつく創世ランクは、+値を重ねるほど大きく伸び、最強をめざせる。+値1ごとにレベル上限が3上がる(最大250)。配合で血を重ねた魔生物は、育てきるとガチャ産に追いつき、追いこせる。</p>
         <p class="small muted">創世ランクはガチャからは出ない。四神(SSS)をLv80以上にして「覚醒の宝珠」を使うと「真」の姿に覚醒する。四神どうしの特殊配合からは「コウリュウ」が生まれる。</p></div></details></div>
@@ -3369,6 +3377,7 @@ const H={
   btab:d=>{ui.btab=d.v;render();},
   bswap:()=>{const x=ui.bA;ui.bA=ui.bB;ui.bB=x;ui.inh=[];ui.trs=[];sfx('sel');render();},
   gpull:d=>{ui.gacha=null;gachaPull(+d.n);},
+  gban:d=>{state.gban=d.sp;save();render();},
   gclose:()=>{ui.gacha=null;render();},
   gview:()=>{const u=ui.gacha&&ui.gacha.list[0];ui.gacha=null;ui.tab='party';if(u)ui.sel=u.uid;ui.detailOpen=true;render();window.scrollTo(0,0);},
   mission:d=>{dailyRoll();const x=MISSIONS.find(q=>q.k===d.k);if(!x||state.daily.got[x.k]||missionVal(x.k)<x.goal)return;state.daily.got[x.k]=true;addStars(x.rw);ui.toast=`デイリーミッション達成！ 流星石★${x.rw}`;sfx('win');save();render();},

@@ -15,8 +15,8 @@ for fn in sorted(os.listdir(ODIR)):
     im = Image.open(os.path.join(ODIR, fn)).convert('RGB')
     w, h = im.size; s = min(w, h)
     im = im.crop(((w - s) // 2, (h - s) // 2, (w - s) // 2 + s, (h - s) // 2 + s)).resize((SIZE, SIZE), Image.LANCZOS)
-    buf = io.BytesIO(); im.save(buf, 'JPEG', quality=84, optimize=True)
-    art[sid] = 'data:image/jpeg;base64,' + base64.b64encode(buf.getvalue()).decode()
+    buf = io.BytesIO(); im.save(buf, 'WEBP', quality=78, method=6)
+    art[sid] = 'data:image/webp;base64,' + base64.b64encode(buf.getvalue()).decode()
 s = open(SRC, encoding='utf8').read()
 block = '/*ART-START*/const ART={' + ','.join(f"{k}:'{v}'" for k, v in art.items()) + '};/*ART-END*/'
 if '/*ART-START*/' in s:
